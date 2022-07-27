@@ -1,17 +1,8 @@
-// v2 		- 16/08/21	- addition of videoFill and videoVisibility for pausing muted videos off screen
-//						- callback fix so player is passed
-// v2.01 	- 17/02/22	- addition of 'type' to players in arrVideos
-// 						- use of dataset over multiple getAttributes
-//						- addition of end value, eg for short video loops
-//						- change to data structure pushed to arrVideos
-//						- videoVisibility fix for incorrect play/pause
-// v2.02	- 06/04/22	- fix with vimeo videos not being pushed to arrVideos!
-
 var arrVideos = [];
 
 (function() {
 	
-	var w = window,
+	let w = window,
 		blnYouTubeApiReady = false,
 		blnVimeoSdkLoaded = false,
 		blnVimeoSdkReady = false,
@@ -56,7 +47,6 @@ var arrVideos = [];
 					'loop': blnLoop && 1,
 					'modestbranding': 1,
 					'mute': intMute,
-					//'origin': window.location.href,
 					'playlist': strVideoID,
 					'playsinline': intMute,
 					'showinfo': 0
@@ -102,8 +92,8 @@ var arrVideos = [];
 	}
 
 	function formatYouTubeURL(strURL) {
-		var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
-	    var strMatch = strURL.match(regExp);
+		var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/,
+			strMatch = strURL.match(regExp);
 	    if (strMatch && strMatch[7].length == 11){
 	        strMatch = strMatch[7];
 	    } else {
@@ -136,17 +126,17 @@ var arrVideos = [];
 			var objPlayerDataset = player.dataset,
 				blnAutoplay = objPlayerDataset.autoplay == 'true',
 				blnMuted = objPlayerDataset.mute == 'true',
-				blnLoop = objPlayerDataset.loop == 'true';
-			var opts = {
-				'autoplay': blnAutoplay,
-				'byline': false,
-				'controls': !blnMuted,
-				'id': objPlayerDataset.videosrc,
-				'loop': blnLoop,
-				'muted': blnMuted,
-				'playsinline': blnMuted,
-				'title': false
-			}
+				blnLoop = objPlayerDataset.loop == 'true',
+				opts = {
+					'autoplay': blnAutoplay,
+					'byline': false,
+					'controls': !blnMuted,
+					'id': objPlayerDataset.videosrc,
+					'loop': blnLoop,
+					'muted': blnMuted,
+					'playsinline': blnMuted,
+					'title': false
+				}
 
 			player.setAttribute('id', 'vimeoplayer_' + intVideoCount);
 			var vimeoPlayer = new Vimeo.Player('vimeoplayer_' + intVideoCount, opts),
@@ -229,9 +219,9 @@ var arrVideos = [];
 			}
 
 			videoFillResize();
-			window.addEventListener('resize', function(){
+			w.addEventListener('resize', function () {
 				videoFillResize();
-			})
+			});
 	
 			function videoFillResize(){
 				var ratio = (16/9),
